@@ -117,7 +117,7 @@ def on_pressed(key):
             draw_map(cursor_placement)
     elif diagonal_menu_up == True:
         global diagonal_menu_cursor
-        if key == keyboard.Key.left:
+        if key == keyboard.Key.left and diagonal_menu_up == True:
             diagonal_menu_cursor = diagonal_menu_cursor -1
             if diagonal_menu_cursor < 0:
                 diagonal_menu_cursor = 0
