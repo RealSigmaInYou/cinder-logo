@@ -1,0 +1,132 @@
+{
+    "marph": {
+     "stats": {
+        "vigor": 4,
+        "strenght": 2,
+        "dexterity": 11,
+        "endurance": 2,
+        "inteligence": 1,
+        "arcane": 8
+        },
+        "misc": {
+            "attack_range": 1,
+            "walk_distance": 5
+        },
+        "position":{
+            "horizontal": 0,
+            "vertical": 0
+        }
+    },
+    "krome": {
+        "stats": {
+        "vigor": 8,
+        "strenght": 8,
+        "dexterity": 8,
+        "endurance": 5,
+        "inteligence": 1,
+        "arcane": 1
+        },
+        "misc": {
+            "attack_range": 1,
+            "walk_distance": 6
+        },
+        "position":{
+            "horizontal": 0,
+            "vertical": 0
+        }
+    },
+    "baileph":{
+        "stats":{
+        "vigor": 5,
+        "strenght": 3,
+        "dexterity": 6,
+        "endurance": 5,
+        "inteligence": 8,
+        "arcane": 7
+    },
+    "misc": {
+            "attack_range": 1,
+            "walk_distance": 6
+        },
+    "position":{
+        "horizontal": 0,
+        "vertical": 0
+    }
+    },
+    "aik":{
+        "stats":{
+        "vigor": 11,
+        "strenght": 8,
+        "dexterity": 2,
+        "endurance": 6,
+        "inteligence": 1,
+        "arcane": 1
+    },
+    "misc": {
+            "attack_range": 1,
+            "walk_distance": 5
+        },
+    "position":{
+        "horizontal": 0,
+        "vertical": 0
+    }   
+    
+    },
+    "korn": {
+        "stats":{
+        "vigor": 1,
+        "strenght": 1,
+        "dexterity": 1,
+        "endurance": 1,
+        "inteligence": 2,
+        "arcane": 28   
+    },
+    "misc": {
+            "attack_range": 1,
+            "walk_distance": 5
+        },
+    "position":{
+        "horizontal": 0,
+        "vertical": 0
+    }
+        
+    },
+    "roar": {
+        "stats":{
+        "vigor": 5,
+        "strenght": 4,
+        "dexterity": 9,
+        "endurance": 2,
+        "inteligence": 5,
+        "arcane": 7
+    },
+    "misc": {
+            "attack_range": 1,
+            "walk_distance": 7
+        },
+    "position":{
+        "horizontal": 0,
+        "vertical": 0
+    }
+    
+    },
+    "alivod": {
+        "stats": {
+        "vigor": 5,
+        "strenght": 4,
+        "dexterity": 9,
+        "endurance": 2,
+        "inteligence": 5,
+        "arcane": 7   
+    },
+    "misc": {
+            "attack_range": 1,
+            "walk_distance": 7
+        },
+    "position":{
+        "horizontal": 0,
+        "vertical": 0
+    }
+        
+    }
+}

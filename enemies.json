@@ -1,0 +1,79 @@
+{
+    "brigand": {
+        "stats": {
+            "vigor": 5,
+            "strength": 4,
+            "dexterity": 4,
+            "endurance": 2,
+            "inteligence": 1,
+            "arcane": 1
+            },
+            "misc": {
+            "attack_range": 1,
+            "walk_distance": 5
+        },
+        "map": {
+            "map_id": [1,2],
+            "map_pos": [[1,2],[1]],
+            "commander": false
+        }
+    
+    },
+    "mercenary": {
+        "stats": {
+            "vigor": 3,
+            "strength": 2,
+            "dexterity": 6,
+            "endurance": 4,
+            "inteligence": 2,
+            "arcane": 1
+        },
+        "misc": {
+            "attack_range": 1,
+            "walk_distance": 6
+        },
+        "map": {
+            "map_id": [2],
+            "map_pos": [2],
+            "commander": false
+        }
+    },
+    "Terrance Bowguard": {
+        "stats": {
+            "vigor": 7,
+            "strength": 6,
+            "dexterity": 5,
+            "endurance": 5,
+            "inteligence": 3,
+            "arcane": 1
+        },
+        "misc": {
+            "attack_range": 1,
+            "walk_distance": 7
+        },
+        "map": {
+            "map_id": [1],
+            "map_pos": [3],
+            "commander": true
+        }
+    },
+    "Seol Bagui": {
+        "stats": {
+            "vigor": 9,
+            "strength": 9,
+            "dexterity": 9,
+            "endurance": 4,
+            "inteligence":1,
+            "arcane": 5
+        },
+        "misc": {
+            "attack_range": 2,
+            "walk_distance": 4
+        },
+        "map": {
+            "map_id":[2],
+            "map_pos": [3],
+            "commander": true
+        }
+    }
+}
