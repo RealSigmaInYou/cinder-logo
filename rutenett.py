@@ -3,163 +3,183 @@ import termcolor
 from pynput import keyboard
 import os
 
+class Game:
+    def __init__(self):
+        with open("characters.json", "r") as characters_raw:
+            self.characters = json.load(characters_raw)
 
-with open("characters.json", "r") as characters_raw:
-    characters = json.load(characters_raw)
+        with open("maps.json", "r") as maps_raw:
+            maps = json.load(maps_raw)
 
-with open("maps.json", "r") as maps_raw:
-    maps = json.load(maps_raw)
+        self.current_map = 1
+        self.vertical = maps[str(self.current_map)]["size"][0]
+        self.horizontal = maps[str(self.current_map)]["size"][1]
+        self.ally_start_positions = {
+            "pos1": {"vertical": 15, "horizontal": 18},
+            "pos2": {"vertical": 1, "horizontal": 3},
+            "pos3": {"vertical": 1, "horizontal": 18}
+        }
+        self.slot_1_character = "marph"
+        self.characters[self.slot_1_character]["position"] = self.ally_start_positions["pos1"]
 
-current_map = 1
-vertical = maps[str(current_map)]["size"][0]
-horizontal = maps[str(current_map)]["size"][1]
-ally_start_positions = {
-    "pos1": {"vertical": 15, "horizontal": 18},
-    "pos2": {"vertical": 1, "horizontal": 3},
-    "pos3": {"vertical": 1, "horizontal": 18}
-}
-slot_1_character = "marph"
-characters[slot_1_character]["position"] = ally_start_positions["pos1"]
+        self.cursor_placement = {
+            "vertical": self.characters[self.slot_1_character]["position"]["vertical"],
+            "horizontal": self.characters[self.slot_1_character]["position"]["horizontal"]
+        }
+        self.unit_selected = False
+        self.diagonal_menu_text = ["Attack   |   ", "Guard   |   ", "Items   |   ", "Wait"]
+        self.diagonal_menu_up = False
+        self.diagonal_menu_cursor = 0
 
-cursor_placement = {
-    "vertical": characters[slot_1_character]["position"]["vertical"],
-    "horizontal": characters[slot_1_character]["position"]["horizontal"]
-}
-unit_selected = False
-diagonal_menu_text = ["Attack   |   ", "Guard   |   ", "Items   |   ", "Wait"]
-diagonal_menu_up = False
+        self.char_position = self.characters[self.slot_1_character]["position"]
+        self.char_vertical = self.char_position["vertical"]
+        self.char_horizontal = self.char_position["horizontal"]
+        self.walk_distance = self.characters[self.slot_1_character]["misc"]["walk_distance"]
+        self.attack_range = self.characters[self.slot_1_character]["misc"]["attack_range"]
 
-diagonal_menu_cursor = 0
+        self.gridmap = {}
+        self.gridnr = 0
+        self.mapstring = ""
+        self.show_range = []
 
-gridmap = {}
-gridnr = 0
-mapstring = ""
+        self.preview_move = []
 
-show_range = []
+        self.show_attack_range_diagonal_cursor_tf = False
+        self.diagonal_menu_cursor = 1
 
-def draw_map(cursor_placement):
-    global gridmap
-    global gridnr
-    global mapstring
-    char_position = characters[slot_1_character]["position"]
-    char_vertical = char_position["vertical"]
-    char_horizontal = char_position["horizontal"]
-    walk_distance = characters[slot_1_character]["misc"]["walk_distance"]
-    attack_range = characters[slot_1_character]["misc"]["attack_range"]
-    os.system("cls")
-    gridmap = {}
-    mapstring = ""
+        self.move_cursor()
 
-    for y in range(vertical):
-        for x in range(horizontal):
-            if char_vertical == y and char_horizontal == x:
-                gridmap[gridnr] = y, x, termcolor.colored("9 ", "green")
-            elif cursor_placement["vertical"] == y and cursor_placement["horizontal"] == x:
-                gridmap[gridnr] =  y, x, termcolor.colored("O ", "yellow")
-            elif ((abs(y - char_vertical) + abs(x - char_horizontal)) <= walk_distance) and (cursor_placement == char_position or slot_1_character in show_range):
-                gridmap[gridnr] =  y, x, termcolor.colored("¤ ", "cyan")
-            elif (abs(y - char_vertical) + abs(x - char_horizontal)) <= walk_distance + attack_range and (cursor_placement == char_position or slot_1_character in show_range):
-                gridmap[gridnr] = y, x, termcolor.colored("¤ ", "red")
-            else:
-                gridmap[gridnr] = y, x, "# "
-            
-            gridnr += 1
+    def draw_map(self):
+        self.gridmap = {}
+        self.mapstring = ""
+        self.gridnr = 0
+        self.char_position = {"vertical": self.char_vertical, 
+                              "horizontal":self.char_horizontal}
 
-    for z in gridmap:
-        mapstring += gridmap[z][2]
-        if gridmap[z][1] == horizontal-1:
-            mapstring += "\n"
+        os.system("cls")
+        if self.show_attack_range_diagonal_cursor_tf == False:
+            for y in range(self.vertical):
+                for x in range(self.horizontal):
+                    if self.char_vertical == y and self.char_horizontal == x:
+                        self.gridmap[self.gridnr] = y, x, termcolor.colored("9 ", "green")
+                    elif self.cursor_placement["vertical"] == y and self.cursor_placement["horizontal"] == x:
+                        self.gridmap[self.gridnr] = y, x, termcolor.colored("O ", "yellow")
+                    elif (abs(y - self.char_vertical) + abs(x - self.char_horizontal) <= self.walk_distance) and (self.cursor_placement == self.char_position or self.slot_1_character in self.show_range):
+                        self.gridmap[self.gridnr] = y, x, termcolor.colored("¤ ", "cyan")
+                    elif (abs(y - self.char_vertical) + abs(x - self.char_horizontal) <= self.walk_distance + self.attack_range) and (self.cursor_placement == self.char_position or self.slot_1_character in self.show_range):
+                        self.gridmap[self.gridnr] = y, x, termcolor.colored("¤ ", "red")
+                    else:
+                        self.gridmap[self.gridnr] = y, x, "# "
 
-    print(mapstring)
-    if diagonal_menu_up == True:
-        print(diagonal_menu_text)
-    
+                    self.gridnr += 1
 
 
+        elif self.show_attack_range_diagonal_cursor_tf == True:
+            for y in range(self.vertical):
+                for x in range(self.horizontal):
+                    if self.char_vertical == y and self.char_horizontal == x:
+                        self.gridmap[self.gridnr] = y, x, termcolor.colored("9 ", "green")
+                    elif self.cursor_placement["vertical"] == y and self.cursor_placement["horizontal"] == x:
+                        self.gridmap[self.gridnr] = y, x, termcolor.colored("O ", "yellow")
+                    elif (abs(y - self.cursor_placement["vertical"]) + abs(x - self.cursor_placement["horizontal"]) <= self.attack_range):
+                        self.gridmap[self.gridnr] = y, x, termcolor.colored("¤ ", "red")
+                    else:
+                        self.gridmap[self.gridnr] = y, x, "# "
 
-def on_pressed(key):
-    global diagonal_menu_up
-    global unit_selected
-    global cursor_placement
-    char_position = characters[slot_1_character]["position"]
-    char_vertical = char_position["vertical"]
-    char_horizontal = char_position["horizontal"]
-    walk_distance = characters[slot_1_character]["misc"]["walk_distance"]
-    attack_range = characters[slot_1_character]["misc"]["attack_range"]
+                    self.gridnr += 1
+        
 
-    if diagonal_menu_up == False:
-        if key == keyboard.Key.up and cursor_placement["vertical"] > 0 and diagonal_menu_up == False:
-            cursor_placement["vertical"] -= 1
-            draw_map(cursor_placement)
-        elif key == keyboard.Key.down and cursor_placement["vertical"] < vertical - 1 and diagonal_menu_up == False:
-            cursor_placement["vertical"] += 1
-            draw_map(cursor_placement)
-        elif key == keyboard.Key.left and cursor_placement["horizontal"] > 0 and diagonal_menu_up == False:
-            cursor_placement["horizontal"] -= 1
-            draw_map(cursor_placement)
-        elif key == keyboard.Key.right and cursor_placement["horizontal"] < horizontal - 1 and diagonal_menu_up == False:
-            cursor_placement["horizontal"] += 1
-            draw_map(cursor_placement)
-        elif key == keyboard.Key.enter and diagonal_menu_up == False:
-            print(unit_selected)
-            if unit_selected == True:
-                if (abs(cursor_placement["vertical"] - char_vertical) + abs(cursor_placement["horizontal"] - char_horizontal)) <= walk_distance:
-                    show_diagonal_menu()
-                    move_cursor()
+        for z in self.gridmap:
+            self.mapstring += self.gridmap[z][2]
+            if self.gridmap[z][1] == self.horizontal - 1:
+                self.mapstring += "\n"
+
+        print(self.mapstring)
+        if self.diagonal_menu_up:
+            print(self.diagonal_menu_text)
+        print(self.char_position)
+        print(self.cursor_placement)
+        print(self.diagonal_menu_cursor)
+
+    def on_pressed(self, key):
+        if self.diagonal_menu_up == False and self.show_attack_range_diagonal_cursor_tf == False:
+            if key == keyboard.Key.up and self.cursor_placement["vertical"] > 0:
+                self.cursor_placement["vertical"] -= 1
+                self.draw_map()
+            elif key == keyboard.Key.down and self.cursor_placement["vertical"] < self.vertical - 1:
+                self.cursor_placement["vertical"] += 1
+                self.draw_map()
+            elif key == keyboard.Key.left and self.cursor_placement["horizontal"] > 0:
+                self.cursor_placement["horizontal"] -= 1
+                self.draw_map()
+            elif key == keyboard.Key.right and self.cursor_placement["horizontal"] < self.horizontal - 1:
+                self.cursor_placement["horizontal"] += 1
+                self.draw_map()
+            elif key == keyboard.Key.enter:
+                if self.unit_selected == True:
+                    if (abs(self.cursor_placement["vertical"] - self.char_vertical) + abs(self.cursor_placement["horizontal"] - self.char_horizontal)) <= self.walk_distance:
+                        self.show_diagonal_menu()
                 else:
-                    move_cursor()
-            elif cursor_placement == char_position and unit_selected == False:
-                unit_selected = True
-                show_range.append(slot_1_character)
-        elif key == keyboard.Key.backspace and unit_selected == True:
-            unit_selected = False
-            show_range.remove(slot_1_character)
-            draw_map(cursor_placement)
-    elif diagonal_menu_up == True:
-        global diagonal_menu_cursor
-        if key == keyboard.Key.left and diagonal_menu_up == True:
-            diagonal_menu_cursor = diagonal_menu_cursor -1
-            if diagonal_menu_cursor < 0:
-                diagonal_menu_cursor = 0
-            show_diagonal_menu()
-            move_cursor()
+                    if self.cursor_placement == self.char_position:
+                        self.unit_selected = True
+                        self.show_range.append(self.slot_1_character)
+                self.draw_map()
+            elif key == keyboard.Key.backspace and self.unit_selected == True:
+                self.unit_selected = False
+                self.show_range.remove(self.slot_1_character)
+                self.draw_map()
+        elif self.show_attack_range_diagonal_cursor_tf == True and self.diagonal_menu_up == False:
+            if key == keyboard.Key.enter:
+                self.char_vertical = self.cursor_placement["vertical"]
+                self.char_horizontal = self.cursor_placement["horizontal"]
+                self.show_attack_range_diagonal_cursor_tf = False
+                self.diagonal_menu_up = False
+                self.draw_map()
+            elif key == keyboard.Key.backspace:
+                self.show_attack_range_diagonal_cursor_tf = False
+                self.draw_map()
+        elif self.diagonal_menu_up == True: 
+            self.handle_diagonal_menu(key)
 
+    def handle_diagonal_menu(self, key):
+        if key == keyboard.Key.left:
+            self.diagonal_menu_cursor = max(0, self.diagonal_menu_cursor - 1)
+            self.show_diagonal_menu()
         elif key == keyboard.Key.right:
-            diagonal_menu_cursor = diagonal_menu_cursor +1
-            if diagonal_menu_cursor > 4:
-                diagonal_menu_cursor = 4
-                show_diagonal_menu() 
-            move_cursor()
-
+            self.diagonal_menu_cursor = min(len(self.diagonal_menu_text) - 1, self.diagonal_menu_cursor + 1)
+            self.show_diagonal_menu()
         elif key == keyboard.Key.enter:
-            if (abs(cursor_placement["vertical"] - char_vertical) + abs(cursor_placement["horizontal"] - char_horizontal)) <= walk_distance:
-                char_position = cursor_placement
-                print(char_position)
-                move_cursor()
+            print(f"Selected: {self.diagonal_menu_text[self.diagonal_menu_cursor]}")
+            self.diagonal_menu_up = False
+            if (abs(self.cursor_placement["vertical"] - self.char_vertical) + abs(self.cursor_placement["horizontal"] - self.char_horizontal) <= self.walk_distance):
+                
+                if self.diagonal_menu_cursor == 0:
+                    self.show_attack_range_diagonal_cursor_tf =True
+                elif self.diagonal_menu_cursor == 1:
+                    self.guarding_diagonal_menu = True
+                elif self.diagonal_menu_cursor == 2:
+                    self.show_item_menu = True
+                elif self.diagonal_menu_cursor == 3:
+                    self.char_vertical = self.cursor_placement["vertical"]
+                    self.char_horizontal = self.cursor_placement["horizontal"]
+            else:
+                self.cursor_placement = self.char_position
+            self.draw_map()
         elif key == keyboard.Key.backspace:
-            diagonal_menu_up = False
-            move_cursor()
-    else:
-        print("huh?")
+            self.diagonal_menu_up = False
+            self.draw_map()
+
+    def move_cursor(self):
+        with keyboard.Listener(on_press=self.on_pressed) as listener:
+            self.draw_map()
+            listener.join()
+
+    def show_diagonal_menu(self):
+        self.diagonal_menu_up = True
+        self.draw_map()
+
+        
 
 
-
-
-
-def move_cursor():
-    with keyboard.Listener(on_press=on_pressed) as listener:
-        draw_map(cursor_placement)
-        listener.join()
-
-
-def show_diagonal_menu():
-    global diagonal_menu_up
-    diagonal_menu_up = True
-    move_cursor(diagonal_menu_up)
-    
-
-def diagonal_menu_on_pressed(key):
-    print("sigma")
-
-
-move_cursor()
+if __name__ == "__main__":
+    Game()

@@ -1,5 +1,4 @@
 ## ting å gjøre
-- legge til cursor (beveges med arrow key eller wasd eller no sånn)
-- gjøre at man kan selecte units for å se range og flytte de (denne kommer til å være irriterende)
 - legge til flere units på rutenettet
 - spørre dabiv om pathfinding
+- legge til ui for units i attack range
