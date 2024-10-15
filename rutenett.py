@@ -178,8 +178,5 @@ class Game:
         self.diagonal_menu_up = True
         self.draw_map()
 
-        
-
-
 if __name__ == "__main__":
     Game()
