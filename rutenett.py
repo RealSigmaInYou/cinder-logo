@@ -92,7 +92,7 @@ class Game:
                         # elif (abs(y - self.characters[character]["position"]["vertical"]) + abs(x - self.characters[character]["position"]["horizontal"]) <= self.characters[character]["misc"]["walk_distance"] + self.characters[character]["misc"]["attack_range"]) and (self.cursor_placement == self.characters[character]["position"] or character in self.show_range):
                         #     self.gridmap[self.gridnr] = y, x, termcolor.colored("¤ ", "red")
                         # else:
-                        self.gridmap[self.gridnr] = y+1, x+1, "# "
+                        self.gridmap[self.gridnr] = y+1, x, "# "
 
                         self.gridnr += 1
 
@@ -121,6 +121,8 @@ class Game:
             self.mapstring += self.gridmap[z][2]
             line_count += 1
             if self.gridmap[z][1] == self.horizontal - 1:
+                # while len(self.mapstring)/line_count < self.vertical:
+                #     self.mapstring += "# "
                 self.mapstring += "\n"
         print(self.mapstring)
         #if self.diagonal_menu_up:
@@ -130,7 +132,7 @@ class Game:
 
     def on_pressed(self, key):
         if self.diagonal_menu_up == False and self.show_attack_range_diagonal_cursor_tf == False:
-            if key == keyboard.Key.up and self.cursor_placement["vertical"] > 0:
+            if key == keyboard.Key.up and self.cursor_placement["vertical"] > 1:
                 self.cursor_placement["vertical"] -= 1
                 self.draw_map()
             elif key == keyboard.Key.down and self.cursor_placement["vertical"] < self.vertical - 1:
