@@ -19,26 +19,32 @@ class Game:
             "pos2": {"vertical": 1, "horizontal": 3},
             "pos3": {"vertical": 1, "horizontal": 18}
         }
-        self.slot_1_character = "marph"
-        self.characters[self.slot_1_character]["position"] = self.ally_start_positions["pos1"]
+        self.selected_characters =["marph", "baileph"]
+
+        self.characters[self.selected_characters[0]]["position"] = self.ally_start_positions["pos1"]
+        self.characters[self.selected_characters[1]]["position"] = self.ally_start_positions["pos2"]
+        
+        print(self.characters["marph"]["position"])
+        print(self.characters["baileph"]["position"])
+
 
         self.cursor_placement = {
-            "vertical": self.characters[self.slot_1_character]["position"]["vertical"],
-            "horizontal": self.characters[self.slot_1_character]["position"]["horizontal"]
+            "vertical": self.characters[self.selected_characters[0]]["position"]["vertical"],
+            "horizontal": self.characters[self.selected_characters[0]]["position"]["horizontal"]
         }
         self.unit_selected = False
         self.diagonal_menu_text = ["Attack   |   ", "Guard   |   ", "Items   |   ", "Wait"]
         self.diagonal_menu_up = False
         self.diagonal_menu_cursor = 0
 
-        self.char_position = self.characters[self.slot_1_character]["position"]
-        self.char_vertical = self.char_position["vertical"]
-        self.char_horizontal = self.char_position["horizontal"]
-        self.walk_distance = self.characters[self.slot_1_character]["misc"]["walk_distance"]
-        self.attack_range = self.characters[self.slot_1_character]["misc"]["attack_range"]
+        # self.char_position = self.characters[self.slot_1_character]["position"]
+        # self.char_vertical = self.char_position["vertical"]
+        # self.char_horizontal = self.char_position["horizontal"]
+        # self.walk_distance = self.characters[self.slot_1_character]["misc"]["walk_distance"]
+        # self.attack_range = self.characters[self.slot_1_character]["misc"]["attack_range"]
 
         self.gridmap = {}
-        self.gridnr = 0
+        self.gridnr = 1
         self.mapstring = ""
         self.show_range = []
 
@@ -49,57 +55,78 @@ class Game:
 
         self.move_cursor()
 
+    def get_add_to_map(self):
+
+        for slot in self.gridmap:
+            for character in self.characters:
+                    if (self.characters[character]["position"]["vertical"] == self.gridmap[slot][0]) and (self.characters[character]["position"]["horizontal"] == self.gridmap[slot][1]): # and (self.characters[character]["position"]["vertical"] == self.ally_start_positions[pos]["vertical"] and self.characters[character]["position"]["horizontal"] == self.ally_start_positions[pos]["horizontal"]):
+                        self.gridmap[slot] = self.characters[character]["position"]["vertical"], self.characters[character]["position"]["horizontal"], termcolor.colored("9 ", "green")
+                    elif (self.cursor_placement["vertical"] == self.gridmap[slot][0])and (self.cursor_placement["horizontal"] == self.gridmap[slot][1]):
+                        self.gridmap[slot] = self.cursor_placement["vertical"], self.cursor_placement["horizontal"], termcolor.colored("O ", "yellow")
+
+                    elif (abs(self.gridmap[slot][0] - self.characters[character]["position"]["vertical"]) + abs(self.gridmap[slot][1] - self.characters[character]["position"]["horizontal"]) <= self.characters[character]["misc"]["walk_distance"]) and (self.cursor_placement == self.characters[character]["position"] or character in self.show_range):
+                        self.gridmap[slot] = self.gridmap[slot][0], self.gridmap[slot][1], termcolor.colored("¤ ", "cyan")
+                    elif (abs(self.gridmap[slot][0] - self.characters[character]["position"]["vertical"]) + abs(self.gridmap[slot][1] - self.characters[character]["position"]["horizontal"]) <= self.characters[character]["misc"]["walk_distance"] + self.characters[character]["misc"]["attack_range"]) and (self.cursor_placement == self.characters[character]["position"] or character in self.show_range):
+                        self.gridmap[slot] = self.gridmap[slot][0], self.gridmap[slot][1], termcolor.colored("¤ ", "red")
+
+
+
+
     def draw_map(self):
         self.gridmap = {}
         self.mapstring = ""
-        self.gridnr = 0
-        self.char_position = {"vertical": self.char_vertical, 
-                              "horizontal":self.char_horizontal}
+        self.gridnr = 1
+        # self.char_position = {"vertical": self.char_vertical, 
+        #                       "horizontal":self.char_horizontal}
 
         os.system("cls")
         if self.show_attack_range_diagonal_cursor_tf == False:
-            for y in range(self.vertical):
-                for x in range(self.horizontal):
-                    if self.char_vertical == y and self.char_horizontal == x:
-                        self.gridmap[self.gridnr] = y, x, termcolor.colored("9 ", "green")
-                    elif self.cursor_placement["vertical"] == y and self.cursor_placement["horizontal"] == x:
-                        self.gridmap[self.gridnr] = y, x, termcolor.colored("O ", "yellow")
-                    elif (abs(y - self.char_vertical) + abs(x - self.char_horizontal) <= self.walk_distance) and (self.cursor_placement == self.char_position or self.slot_1_character in self.show_range):
-                        self.gridmap[self.gridnr] = y, x, termcolor.colored("¤ ", "cyan")
-                    elif (abs(y - self.char_vertical) + abs(x - self.char_horizontal) <= self.walk_distance + self.attack_range) and (self.cursor_placement == self.char_position or self.slot_1_character in self.show_range):
-                        self.gridmap[self.gridnr] = y, x, termcolor.colored("¤ ", "red")
-                    else:
-                        self.gridmap[self.gridnr] = y, x, "# "
+                for y in range(self.vertical):
+                    for x in range(self.horizontal):
+                        # if self.characters[character]["position"]["vertical"] == y and self.characters[character]["position"]["horizontal"] == x:
+                        #     self.gridmap[self.gridnr] = y, x, termcolor.colored("9 ", "green")
+                        # elif self.cursor_placement["vertical"] == y and self.cursor_placement["horizontal"] == x:
+                        #     self.gridmap[self.gridnr] = y, x, termcolor.colored("O ", "yellow")
+                        # elif (abs(y - self.characters[character]["position"]["vertical"]) + abs(x - self.characters[character]["position"]["horizontal"]) <= self.characters[character]["misc"]["walk_distance"]) and (self.cursor_placement == self.characters[character]["position"] or character in self.show_range):
+                        #     self.gridmap[self.gridnr] = y, x, termcolor.colored("¤ ", "cyan")
+                        # elif (abs(y - self.characters[character]["position"]["vertical"]) + abs(x - self.characters[character]["position"]["horizontal"]) <= self.characters[character]["misc"]["walk_distance"] + self.characters[character]["misc"]["attack_range"]) and (self.cursor_placement == self.characters[character]["position"] or character in self.show_range):
+                        #     self.gridmap[self.gridnr] = y, x, termcolor.colored("¤ ", "red")
+                        # else:
+                        self.gridmap[self.gridnr] = y+1, x+1, "# "
 
-                    self.gridnr += 1
+                        self.gridnr += 1
 
 
         elif self.show_attack_range_diagonal_cursor_tf == True:
             for y in range(self.vertical):
                 for x in range(self.horizontal):
-                    if self.char_vertical == y and self.char_horizontal == x:
-                        self.gridmap[self.gridnr] = y, x, termcolor.colored("9 ", "green")
-                    elif self.cursor_placement["vertical"] == y and self.cursor_placement["horizontal"] == x:
-                        self.gridmap[self.gridnr] = y, x, termcolor.colored("O ", "yellow")
-                    elif (abs(y - self.cursor_placement["vertical"]) + abs(x - self.cursor_placement["horizontal"]) <= self.attack_range):
-                        self.gridmap[self.gridnr] = y, x, termcolor.colored("¤ ", "red")
-                    else:
-                        self.gridmap[self.gridnr] = y, x, "# "
+                    for character in self.characters:
+                        if self.char_vertical == y and self.char_horizontal == x:
+                            self.gridmap[self.gridnr] = y+1, x+1, termcolor.colored("9 ", "green")
+                        elif self.cursor_placement["vertical"] == y and self.cursor_placement["horizontal"] == x:
+                            self.gridmap[self.gridnr] = y+1, x+1, termcolor.colored("O ", "yellow")
+                        elif (abs(y - self.cursor_placement["vertical"]) + abs(x - self.cursor_placement["horizontal"]) <= self.characters[character]["misc"]["attack_range"]):
+                            self.gridmap[self.gridnr] = y+1, x+1, termcolor.colored("¤ ", "red")
+                        else:
+                            self.gridmap[self.gridnr] = y+1, x+1, "# "
 
-                    self.gridnr += 1
+                        self.gridnr += 1
         
 
+        self.get_add_to_map()
+        self.gridmapline = ""
+        line_count = 0
         for z in self.gridmap:
+
             self.mapstring += self.gridmap[z][2]
+            line_count += 1
             if self.gridmap[z][1] == self.horizontal - 1:
                 self.mapstring += "\n"
-
         print(self.mapstring)
-        if self.diagonal_menu_up:
-            print(self.diagonal_menu_text)
-        print(self.char_position)
-        print(self.cursor_placement)
-        print(self.diagonal_menu_cursor)
+        #if self.diagonal_menu_up:
+            #print(self.diagonal_menu_text)
+        # print(self.cursor_placement)
+        # print(self.diagonal_menu_cursor)
 
     def on_pressed(self, key):
         if self.diagonal_menu_up == False and self.show_attack_range_diagonal_cursor_tf == False:

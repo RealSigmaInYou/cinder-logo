@@ -45,7 +45,7 @@
         "arcane": 7
     },
     "misc": {
-            "attack_range": 1,
+            "attack_range": 2,
             "walk_distance": 6
         },
     "position":{
