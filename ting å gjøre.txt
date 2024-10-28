@@ -1,4 +1,4 @@
 ## ting å gjøre
-- legge til flere units på rutenettet
+- legge til flere units på rutenettet (er gjort men funker ikke helt)
 - spørre dabiv om pathfinding
 - legge til ui for units i attack range
