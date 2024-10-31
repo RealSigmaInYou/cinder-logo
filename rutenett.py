@@ -134,7 +134,6 @@ class Game:
                 self.mapstring += "\n"
 
         print(self.mapstring)
-        # Print additional information, like menu, cursor position, etc.
         if self.diagonal_menu_cursor == 0:
             self.diagonal_menu1 = "x"
             self.diagonal_menu2 = " "
