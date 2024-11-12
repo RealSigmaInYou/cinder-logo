@@ -10,7 +10,8 @@
             },
             "misc": {
             "attack_range": 1,
-            "walk_distance": 5
+            "walk_distance": 5,
+            "id": 0
         },
         "map": {
             "map_id": [1,2],
@@ -30,7 +31,8 @@
         },
         "misc": {
             "attack_range": 1,
-            "walk_distance": 6
+            "walk_distance": 6,
+            "id": 0
         },
         "map": {
             "map_id": [2],
@@ -49,7 +51,8 @@
         },
         "misc": {
             "attack_range": 1,
-            "walk_distance": 7
+            "walk_distance": 7,
+            "id": 0
         },
         "map": {
             "map_id": [1],
@@ -68,7 +71,8 @@
         },
         "misc": {
             "attack_range": 2,
-            "walk_distance": 4
+            "walk_distance": 4,
+            "id": 0
         },
         "map": {
             "map_id":[2],
